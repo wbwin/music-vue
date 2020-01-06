@@ -122,7 +122,6 @@ export default {
       let that = this
       var timestamp = Date.parse(new Date());
       that.$http.post(api.lyric+'?timestamp='+timestamp,{id:that.playList[that.playListIndex].id}).then(res => {
-        console.log(res)
         var lines=res.data.lrc.lyric
         
          lines = lines.split('\n');
@@ -226,7 +225,6 @@ export default {
         //暂停开始音乐
         audioPause(){
             const that=this
-            // console.log(that.innerAudioContext)
             if(that.play){
                 that.playSec=false
                 that.updatePlay(false)
@@ -323,7 +321,6 @@ export default {
         },
         // 当音频播放
         onPlay (e) {
-            console.log('播放')
             const that=this
             clearInterval(that.currentTimer)
             var currentTime=e.target.currentTime
@@ -391,7 +388,6 @@ export default {
         // wx.createSelectorQuery().select('#'+id).boundingClientRect(function (rect) { //监听canvas的宽高
             var w = parseInt(rect.width/2); //获取canvas宽的的一半
             var h = parseInt(rect.height/2); //获取canvas高的一半，
-            console.log(speedPercent)
             that.canvasTap(speedPercent, that.percentage, time, w, h)
         // }).exec();
         // }
@@ -542,7 +538,7 @@ audio{
                                 color: #525252;
                             }
                             .author{
-                                display: inline-block;
+                                display: inline;
                                 vertical-align: bottom;
                                 font-size: 13px;
                                 color: #a0a0a0;

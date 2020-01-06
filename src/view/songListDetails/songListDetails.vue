@@ -72,7 +72,7 @@
     </div>
     <!-- <scroll-view  :style="{'height': '280px'}" :scroll-y="true" > -->
       <ul class="flex_column music_detail_ul">
-        <li class="flex_row music_detail_li">
+        <li class="flex_row music_detail_li" @click="nextPlay()">
           <img src="/static/images/next_play.png" class="music_detail_icon"/>
           <p class="music_detail_li_p">下一首播放</p>
         </li>
@@ -104,6 +104,7 @@
 import api from '../../utils/api.js'
 import playBox from '../../components/playBox.vue'
 import {mapState, mapActions} from 'vuex'
+import { Toast } from 'vant'
 const util = require("../../utils/util.js")
 export default {
   components:{playBox},
@@ -126,9 +127,34 @@ export default {
     that.$http.post(api.playlistDetail+'?timestamp='+timestamp,{id:that.$route.query.id}).then(res=>{
       that.songListDetails=res.data.playlist
     })
+    
   },
   methods: {
     ...mapActions(['updatePlayListIndex','updatePlayListTime','updatePlayList','updatePlayListMaxTime','updatePlay']),
+    //下一首播放
+    nextPlay(){
+      var that=this
+      that.hideModal()
+      let tracksDetail=that.tracksDetail
+      if(that.playList.length>0&&that.playList[0].id!=0){
+        let playListId=that.playList[that.playListIndex].id
+        if(playListId!=tracksDetail.id){
+          let playList=JSON.parse(localStorage.getItem("playList"))
+          let tracksDetailIndex=playList.findIndex(item=>item.id===tracksDetail.id)
+          console.log(tracksDetailIndex)
+          playList.splice(tracksDetailIndex,1)
+          console.log(playList)
+          let index=playList.findIndex(item=>item.id===playListId)
+          playList.splice(index+1,0,tracksDetail)
+          localStorage.setItem('playList',JSON.stringify(playList))
+          that.toAudioPlay(playListId)
+        }
+        Toast('已添加到下一首播放');
+        
+      }else{
+        that.toAudioPlay(tracksDetail.id)
+      }
+    },
     async toAudioPlay(audioId,index){
       let that=this
       const playList=await that.getPlayList(audioId,index)
@@ -140,7 +166,12 @@ export default {
     },
     async getPlayList(audioId,index){
       const that=this
-      const list=that.songListDetails.tracks
+      let list=[]
+      if(index||index===0){
+        list=that.songListDetails.tracks
+      }else{
+        list=JSON.parse(localStorage.getItem('playList'))
+      }
       localStorage.setItem('playList',JSON.stringify(list))
       const playList=list
       if(playList && playList.length > 0){//判断缓存中是否有音乐列表 有则直接使用 否则重新存缓存
@@ -194,7 +225,6 @@ export default {
       var that=this
       var tracks=that.songListDetails.tracks
       that.tracksDetail=tracks[index]
-      console.log(tracks[index])
       that.showModalStatus=true
     },
     showModal() {
@@ -204,7 +234,6 @@ export default {
     },
     hideModal(){
         var that=this
-        console.log(12)
         that.showModalStatus=false
     },
   }
