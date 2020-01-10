@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'identity',
-      component: () => import("@/view/identity/identity.vue")
+      name: 'index',
+      component: () => import("@/view/index/index.vue")
     },
     {
       path: "/songListDetails",

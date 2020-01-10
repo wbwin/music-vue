@@ -6,8 +6,8 @@ var instance = axios.create({
   timeout: 50000, //请求超时的时间
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "http://47.104.254.188:3000"
-      : "http://47.104.254.188:3000", //请求的域名
+      ? "http://www.xiaopangjs.top:3000"
+      : "http://www.xiaopangjs.top:3000", //请求的域名
   headers: { "Content-Type": "application/x-www-form-urlencoded" }
 });
 
